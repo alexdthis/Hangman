@@ -1,7 +1,19 @@
+#Random number generator
+random_word = ((Random.rand() * 10000).round)
+chosen_word = ''
+line_count = 1
 #open the text file
 
-#Random number generator
+File.open ('google-10000-english-no-swears.txt') do |file|
+    file.each do |line|
+        if line_count == random_word
+            chosen_word = line
+        end
+        line_count += 1
+    end
+end
 
+puts chosen_word
 #Select the word from the file
 
 #Store the word in an array and generate another string containing length of word underlines
