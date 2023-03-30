@@ -50,11 +50,11 @@ class Game
             self.choose_save
             #assign variables from the file then put them in the game loop
             load_game
-            @turns = @save_state[0].to_i
-            @chosen_word = @save_state[1].split('')
-            @history = @save_state[2].split('')
-            @wrong_choices = @save_state[3].to_i
-            @mystery = self.puzzle_gen
+            @turns = @save_state[0].strip.to_i
+            @chosen_word = @save_state[1].strip.split('')
+            @history = @save_state[2].strip.split('')
+            @wrong_choices = @save_state[3].strip.to_i
+            @mystery = @save_state[4].strip.split('')
         end
     end
 
@@ -81,14 +81,15 @@ class Game
 
     def save_game
         file_number = 1
-        while File.exist?('Save#{file_number}.txt')
+        while File.exist?("./saves/Save#{file_number}.txt") do
             file_number += 1
         end
         File.open("./saves/Save#{file_number}.txt", 'w') do |file|
             file.puts @turns
             file.puts @chosen_word.join('')
-            file.puts @history.join(' ')
+            file.puts @history.join('')
             file.puts @wrong_choices.to_i
+            file.puts @mystery.join('')
             file.puts "Created: #{Time.now}"
         end
     end
@@ -125,7 +126,6 @@ class Game
         end
         if @input == 'save'
             self.save_game
-            @input = ' '
         else
             @turns += 1
         end
@@ -136,18 +136,18 @@ class Game
 #If the character is in the mystery word, go through the underlines array and replace all corresponding indexes with the character
 
     def word_checker
-        @history.append(@input)
         word_is_wrong = true
-        @chosen_word.each_index do |index|
-            if @chosen_word[index] == @input
-                @mystery[index] = @input
-                word_is_wrong = false
+        if @input != 'save'
+            @history.append(@input)
+            word_is_wrong = true
+            @chosen_word.each_index do |index|
+                if @chosen_word[index] == @input
+                    @mystery[index] = @input
+                    word_is_wrong = false
+                end
             end
         end
-        if @input == 'save'
-            word_is_wrong = false
-        end
-        if word_is_wrong
+        if (word_is_wrong &&  @input != 'save')
             @wrong_choices += 1
         end
     end 
@@ -204,13 +204,13 @@ class Game
     def game
         @game_won = false
         self.new_or_load
-        until ((@wrong_choices == 11) || @game_won)
+        until ((@wrong_choices == 12) || @game_won)
             system 'clear'
             self.draw_hanged_man
             puts "Turn: #{@turns}"
             puts "Choices left until this man is hanged: #{12 - @wrong_choices}"
             puts "Word: #{@mystery.join(' ')}"
-            puts "Characters played: #{@history.join(' ')}"
+            puts "Characters played: #{@history.join('')}"
             self.input_character
             self.word_checker
             
