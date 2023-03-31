@@ -1,0 +1,27 @@
+--- !ruby/object:Hangman::Game
+load_state: 1
+game_won: false
+turns: 8
+history:
+- e
+- i
+- o
+- u
+- p
+- b
+- a
+- l
+chosen_word:
+- l
+- u
+- c
+- i
+- a
+mystery:
+- l
+- u
+- _
+- i
+- a
+wrong_choices: 4
+input: save
